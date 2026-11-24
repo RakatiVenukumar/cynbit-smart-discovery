@@ -34,13 +34,33 @@ Direct inspection of Cynbit Technologies' official website ([cynbit.in](https://
 - **Public Demo Dashboard (`/demo/admin`)**: Synthetic-data analytics dashboard with Recharts visualizations and search/filter controls—never exposes real database records.
 - **Protected Admin Dashboard (`/admin/login`, `/admin`, `/admin/inquiries/:id`)**: JWT + Argon2 authenticated dashboard with live PostgreSQL analytics, search/filtering, status updates, qualification breakdown, and formula-injection-safe CSV export.
 
+## Live Production Deployment
+
+- **Frontend:** [https://cynbit-smart-discovery.vercel.app/](https://cynbit-smart-discovery.vercel.app/)
+- **Backend health:** [https://cynbit-smart-discovery-api.onrender.com/api/health](https://cynbit-smart-discovery-api.onrender.com/api/health)
+- **API documentation:** [https://cynbit-smart-discovery-api.onrender.com/docs](https://cynbit-smart-discovery-api.onrender.com/docs)
+- **Production database:** Neon PostgreSQL, Singapore region.
+
+The production customer journey, inquiry submission, and database persistence have been verified by the project owner. The backend test and frontend build results are recorded in [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md).
+
+## Production Screenshots
+
+- [Landing page](docs/screenshots/01_landing_page.png)
+- [Discovery wizard](docs/screenshots/02_discovery_wizard.png)
+- [Project blueprint](docs/screenshots/03_project_blueprint.png)
+- [Submission confirmation](docs/screenshots/04_success_confirmation.png)
+- [Demo dashboard](docs/screenshots/05_demo_dashboard.png)
+- [Mobile responsive view](docs/screenshots/06_mobile_responsive.png)
+
+The full technical report is available as [Markdown](docs/TECHNICAL_REPORT.md) and [PDF](docs/Cynbit_Smart_Discovery_Technical_Report.pdf).
+
 ---
 
 ## Technology Stack
 
 - **Frontend:** React 19, Vite 8, Tailwind CSS v4, React Router v7, Axios, Lucide React, Recharts
 - **Backend:** Python 3.11, FastAPI, SQLAlchemy 2.x, Psycopg 3, Alembic, Pydantic v2, PyJWT, Argon2 (`argon2-cffi`), Uvicorn
-- **Database:** PostgreSQL 18.7
+- **Database:** Neon PostgreSQL (production, Singapore region); PostgreSQL 18.7 in the documented local test environment
 - **Testing:** Pytest, FastAPI `TestClient`, Oxlint, Vite production build
 
 ---
@@ -77,7 +97,9 @@ cynbit-smart-discovery/
 │   ├── WEBSITE_ANALYSIS.md
 │   ├── ARCHITECTURE.md
 │   ├── TEST_RESULTS.md
-│   └── TECHNICAL_REPORT.md
+│   ├── TECHNICAL_REPORT.md
+│   ├── Cynbit_Smart_Discovery_Technical_Report.pdf
+│   └── screenshots/
 ├── render.yaml                  # Render backend deployment spec
 └── README.md
 ```
@@ -134,9 +156,10 @@ npm run build
 
 ## Deployment
 
-- **Frontend (Vercel):** Set root directory to `frontend`, build command `npm run build`, output directory `dist`, and environment variable `VITE_API_URL=https://<your-render-service>.onrender.com/api`. `frontend/vercel.json` handles SPA route rewrites.
+- **Frontend (Vercel):** Production URL is [cynbit-smart-discovery.vercel.app](https://cynbit-smart-discovery.vercel.app/). For a new deployment, set root directory to `frontend`, build command `npm run build`, output directory `dist`, and environment variable `VITE_API_URL=https://<your-render-service>.onrender.com/api`. `frontend/vercel.json` handles SPA route rewrites.
 - **Backend (Render):** Use `render.yaml` (`rootDir: backend`, `startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT`, health check `/api/health`). Set `DATABASE_URL`, `SECRET_KEY`, and `CORS_ORIGINS`.
-- **Database (Neon / Hosted PostgreSQL):** Supply the hosted `postgresql+psycopg://...?sslmode=require` connection string in `DATABASE_URL`.
+- **Backend API:** [cynbit-smart-discovery-api.onrender.com](https://cynbit-smart-discovery-api.onrender.com), with interactive docs at [/docs](https://cynbit-smart-discovery-api.onrender.com/docs).
+- **Database (Neon):** Production PostgreSQL is hosted in the Singapore region. Supply the connection string through the deployment environment's `DATABASE_URL` setting; never commit it.
 
 ---
 
@@ -144,4 +167,5 @@ npm run build
 
 - Recommendations and qualification scores use deterministic prototype rules rather than actual Cynbit pricing, effort estimates, or historical sales data.
 - Admin JWT tokens are stored in `sessionStorage` (cleared when the browser tab closes) rather than `localStorage` or cross-origin `HttpOnly` cookies.
-- **AI-Assisted Development Disclosure:** AI coding assistance was used to accelerate scaffolding, UI implementation, test authoring, and documentation, with all architecture, deterministic business rules, database migrations, and test executions verified locally.
+- Public endpoint rate limiting is not backed by a shared service such as Redis.
+- **AI-Assisted Development Disclosure:** Google Antigravity and other AI coding assistance supported implementation, scaffolding, test authoring, and documentation. AI is not used by the running recommendation or qualification engines; these use deterministic application rules. Recorded test results and project-owner-confirmed production verification are described separately in [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md).

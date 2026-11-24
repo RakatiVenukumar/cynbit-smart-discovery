@@ -47,3 +47,9 @@ Executed against live `http://localhost:5173` (Vite) and `http://127.0.0.1:8000`
 - **Inquiry Submission (`/success`) & PostgreSQL:** Submitted inquiry and received Reference ID **`CSD-20261124-89BE9`**. Direct PostgreSQL query confirmed persisted record: `CSD-20261124-89BE9`, `Example Tech Ltd`, qualification score `71`, priority `medium`.
 - **Demo Dashboard (`/demo/admin`):** Verified KPI cards, Service Demand bar chart, Priority Distribution pie chart, and 6-row synthetic table with 0 console errors and 0 HTTP `>=400` responses.
 - **UI Fixes Applied After Inspection:** Fixed hero secondary button contrast (`darkOutline` variant) and eliminated premature Step 5 validation alert on Step 4→5 transition.
+
+## 4. Production Verification
+
+The project owner confirmed that the deployed production customer journey was completed successfully, an inquiry was submitted, and the inquiry persisted in the production Neon PostgreSQL database in the Singapore region. This owner-reported production verification is separate from the local automated test and browser results above.
+
+During documentation handover, the public frontend returned HTTP 200, the backend health endpoint returned HTTP 200, and the API documentation page returned HTTP 200. No additional automated production test count is claimed.
